@@ -2,14 +2,17 @@ class Spree::ContactUs::ContactsController < Spree::StoreController
   helper 'spree/products'
   def create
     @contact = Spree::ContactUs::Contact.new(params[:contact_us_contact])
-
-    if @contact.save
-      if Spree::ContactUs::Config.contact_tracking_message.present?
-        flash[:contact_tracking] = Spree::ContactUs::Config.contact_tracking_message
+    respond_to do |format|
+      if @contact.save
+        if Spree::ContactUs::Config.contact_tracking_message.present?
+          flash[:contact_tracking] = Spree::ContactUs::Config.contact_tracking_message
+        end
+        format.html { redirect_to(spree.root_path, notice: Spree.t('spree_contact_us.notices.success')) }
+        format.json { render :ok, status: :created}
+      else
+        format.html { render :new }
+        format.json { render json: { error: "Invalid request", status: :unprocessable_entity } }
       end
-      redirect_to(spree.root_path, notice: Spree.t('spree_contact_us.notices.success'))
-    else
-      render :new
     end
   end
 
