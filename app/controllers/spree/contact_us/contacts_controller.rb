@@ -8,10 +8,10 @@ class Spree::ContactUs::ContactsController < Spree::StoreController
           flash[:contact_tracking] = Spree::ContactUs::Config.contact_tracking_message
         end
         format.html { redirect_to(spree.root_path, notice: Spree.t('spree_contact_us.notices.success')) }
-        format.json { render :ok, status: :created}
+        format.json { render json: { success: true, error: nil }, status: :created}
       else
         format.html { render :new }
-        format.json { render json: { error: "Invalid request", status: :unprocessable_entity } }
+        format.json { render json: { success: false, error: "Invalid request", status: :unprocessable_entity } }
       end
     end
   end
